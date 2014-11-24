@@ -222,4 +222,15 @@ class LevelTest < ActiveSupport::TestCase
     assert_equal level.solution_blocks, level.ideal_level_source.data
   end
 
+  test 'delete removed level properties on import' do
+    # WIP
+    level = Level.create(instructions: 'test', type: 'Studio', embed: true)
+    xml = level.to_xml
+    json = Nokogiri::XML(xml, &:noblanks).xpath('//../config').first.text
+    level_hash = JSON.parse(json)
+    level_hash.delete 'embed'
+    level.load_level_xml xml
+    assert_equal false, level.embed
+  end
+
 end
