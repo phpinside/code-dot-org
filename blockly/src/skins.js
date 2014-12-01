@@ -13,7 +13,8 @@ exports.load = function(assetUrl, id) {
     assetUrl: skinUrl,
     // Images
     avatar: skinUrl('avatar.png'),
-    avatar_2x: skinUrl('avatar_2x.png'),
+    avatar_2x: skinUrl('avatar_1h_2x.png'),
+    avatar_2h_2x: skinUrl('avatar_2h_2x.png'),
     tiles: skinUrl('tiles.png'),
     goal: skinUrl('goal.png'),
     obstacle: skinUrl('obstacle.png'),

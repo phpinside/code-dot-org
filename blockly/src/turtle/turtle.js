@@ -78,6 +78,7 @@ Turtle.heading = 0;
  * The avatar image
  */
 Turtle.avatarImage = new Image();
+Turtle.avatarImage_2 = new Image();
 Turtle.numberAvatarHeadings = undefined;
 
 /**
@@ -95,11 +96,11 @@ Turtle.isDrawingWithPattern = false;
 
 function backingScale(context) {
   // disable retina for now
-  // if ('devicePixelRatio' in window) {
-  //   if (window.devicePixelRatio > 1) {
-  //     return window.devicePixelRatio;
-  //   }
-  // }
+  if ('devicePixelRatio' in window) {
+    if (window.devicePixelRatio > 1) {
+      return window.devicePixelRatio;
+    }
+  }
   return 1;
 }
 
@@ -382,7 +383,10 @@ Turtle.loadTurtle = function() {
     Turtle.display();
   };
   if ((skin.id == "anna" || skin.id == "elsa") && retina > 1)
+  {
     Turtle.avatarImage.src = skin.avatar_2x;
+    Turtle.avatarImage_2.src = skin.avatar_2h_2x;
+  }
   else
     Turtle.avatarImage.src = skin.avatar;
   if (skin.id == "anna")
@@ -429,7 +433,15 @@ Turtle.drawTurtle = function() {
   }
   var sourceX = Turtle.avatarImage.spriteWidth * index;
   if (skin.id == "anna" || skin.id == "elsa") {
-    sourceY = Turtle.avatarImage.spriteHeight * turtleFrame;
+    var turtleFrameUse;
+    if (turtleFrame >= skin.turtleNumFrames/2)
+      turtleFrameUse = turtleFrame - skin.turtleNumFrames/2;
+    else
+      turtleFrameUse = turtleFrame; 
+
+    sourceY = Turtle.avatarImage.spriteHeight * turtleFrameUse;
+
+
     turtleFrame = (turtleFrame + 1) % skin.turtleNumFrames;
   } else {
     sourceY = 0;
