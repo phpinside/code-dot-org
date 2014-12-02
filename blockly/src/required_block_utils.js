@@ -74,6 +74,7 @@ exports.makeTestsFromBuilderRequiredBlocks = function (customRequiredBlocks) {
       case 'procedures_defnoreturn':
       case 'procedures_defreturn':
         requiredBlocksTests.push(testsFromProcedure(childNode));
+        // TODO: testFromBlockInsideFunction for each descendant block
         break;
       default:
         requiredBlocksTests.push([testFromBlock(childNode)]);
@@ -92,6 +93,21 @@ function testFromBlock (node) {
       // Encode userBlock while ignoring child statements
       var userElement = Blockly.Xml.blockToDom_(userBlock, true);
       return elementsEquivalent(node, userElement);
+    },
+    blockDisplayXML: xml.serialize(node)
+  };
+}
+
+/**
+ * Given xml for a single block generates a block test for ensuring the block
+ * occurs inside a function definition
+ */
+function testFromBlockInsideFunction (node) {
+  return {
+    test: function(userBlock) {
+      return hasMatchingAncestor(userBlock, function(parent) {
+        return !!parent.parameterNames_;
+      }) && elementsEquivalent(node, Blockly.Xml.blockToDom_(userBlock, true));
     },
     blockDisplayXML: xml.serialize(node)
   };
@@ -143,6 +159,20 @@ function testsFromProcedure(node) {
     },
     message: msg.errorRequiredParamsMissing()
   }];
+}
+
+/**
+ * Returns true if any ancestor (inclusive) of the given node matches the
+ * given filter
+ */
+function hasMatchingAncestor(node, filter) {
+  if (!node) {
+    return false;
+  }
+  if (filter(node)) {
+    return true;
+  }
+  return hasMatchingAncestor(node.parentBlock_, filter);
 }
 
 /**
